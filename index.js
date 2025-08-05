@@ -39,7 +39,7 @@ async function insertData(data) {
                 data.pressure,
             ]
         )
-        console.log(`Inserted ID: ${result}`)
+        console.log(`写入id: ${result}`)
     } catch (err) {
         console.error('Database insert error:', err)
     } finally {
@@ -52,7 +52,7 @@ async function run() {
     await sock.bind('tcp://0:40000')
     console.log('Worker connected to port 40000')
     for await (const [msg] of sock) {
-        console.log(msg, msg.toString(), 22222222)
+        console.log(msg, msg.toString())
         let data = JSON.parse(msg.toString())
         if (data.type == 1) {
             await sock.send(JSON.stringify({ ret: 0, mes: 'ok' }))
