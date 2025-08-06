@@ -14,9 +14,9 @@ async function insertData(data) {
     try {
         connection = await pool.getConnection()
         const [result] = await connection.execute(
-            `INSERT INTO ScanData_999999996A6C3075E172BE6C3075
-      (Id,ScanTime, Duration, SpecName,SummaryOrNot,RBW,Harmonic, FrequencyCount,MinFrequency,MaxFrequency,PowerValues,AverageMag,ChannelPower,Stdev,UpMinLowForCp,AIValues)
-      VALUES (?, ?, ?, ?, ?,?,?,?,?,?,?,?,?,?,?,?)`,
+            `INSERT INTO ScanData_${data.mid}
+      (Id,ScanTime, Duration, SpecName,SummaryOrNot,RBW,Harmonic, FrequencyCount,MinFrequency,MaxFrequency,PowerValues,AverageMag,ChannelPower,Stdev,UpMinLowForCp,FlowVolume,FlowRate,Temperature,Pressure)
+      VALUES (?, ?, ?, ?, ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 null,
                 data.date_time,
@@ -33,7 +33,10 @@ async function insertData(data) {
                 null,
                 null,
                 null,
-                data.ai || null,
+                data.flow_volume,
+		    data.flow_rate,
+		    data.temperature,
+		    data.pressure
             ],
         )
         console.log(`Inserted ID: ${result}`)
