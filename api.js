@@ -11,11 +11,51 @@ const pool = mysql.createPool({
     connectionLimit: 10,
     queueLimit: 0,
 })
-app.get('/data', async (req, res) => {
+app.get('/api/table', async (req, res) => {
+    try {
+        const dbName = 'collect_db'
+        const query = `
+    SELECT TABLE_NAME 
+    FROM TABLES 
+    WHERE TABLE_SCHEMA = ?
+  `
+
+        // 从连接池获取连接
+        pool.getConnection((err, connection) => {
+            if (err) {
+                console.error('获取数据库连接失败:', err)
+                return res.status(500).json({ error: '数据库连接失败' })
+            }
+
+            // 执行查询
+            connection.query(query, [dbName], (error, results) => {
+                // 释放连接回连接池
+                connection.release()
+
+                if (error) {
+                    console.error('查询失败:', error)
+                    return res.status(500).json({ error: '数据库查询失败' })
+                }
+
+                // 提取表名到数组
+                const tables = results.map((row) => row.TABLE_NAME)
+                console.log(tables, 1111111)
+                res.json({
+                    ret: 0,
+                    data: tables,
+                })
+            })
+        })
+    } catch (err) {
+        console.error('查询失败:', err)
+        res.status(500).json({ success: false, error: '数据库查询失败' })
+    }
+})
+app.get('/api/data', async (req, res) => {
     try {
         // 获取分页参数并设置默认值
         const page = parseInt(req.query.page) || 1
-        const pageSize = parseInt(req.query.pageSize) || 10
+        const pageSize = parseInt(req.query.pageSize) || 20
 
         // 计算偏移量
         const offset = (page - 1) * pageSize
@@ -81,7 +121,7 @@ app.get('/data', async (req, res) => {
         const totalPages = Math.ceil(totalItems / pageSize)
 
         res.json({
-            success: true,
+            ret: 0,
             data: rows,
             pagination: {
                 page,
