@@ -6,31 +6,20 @@ const pool = mysql.createPool({
     host: '127.0.0.1',
     user: 'root',
     password: 'Tity*963.',
-    database: 'collect_db',
+    database: 'db_CleanWater',
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
 })
 app.get('/api/table', async (req, res) => {
     try {
-        const dbName = 'collect_db'
-        // 正确的系统表查询语句
-        const query = `
-            SELECT TABLE_NAME 
-            FROM INFORMATION_SCHEMA.TABLES 
-            WHERE TABLE_SCHEMA = ?
-        `
-
-        // 直接使用pool.query简化连接管理
-        const [results] = await pool.query(query, [dbName])
-
-        // 提取表名数组
-        const tables = results.map((row) => row.TABLE_NAME)
-        console.log('获取的表列表:', tables)
+        const query = `SELECT * FROM DeviceList`
+        const [results] = await pool.query(query)
+        console.log('获取的表列表:', results)
 
         res.json({
             ret: 0,
-            data: tables,
+            data: results,
         })
     } catch (err) {
         console.error('数据库操作失败:', err)
