@@ -4,7 +4,7 @@ const DB_CONFIG = {
     host: 'localhost',
     user: 'root',
     password: 'Tity*963.',
-    database: 'collect_db',
+    database: 'db_CleanWater',
     waitForConnections: true,
     connectionLimit: 10,
 }
@@ -20,7 +20,7 @@ async function insertData(data) {
             [
                 null,
                 data.date_time,
-                data.duration || null,
+                data.duration,
                 null,
                 null,
                 data.rbw,
@@ -30,7 +30,7 @@ async function insertData(data) {
                 data.frequency_max,
                 data.power,
                 null,
-                null,
+                data.channel_power,
                 null,
                 null,
                 data.flow_volume,
